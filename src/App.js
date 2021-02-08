@@ -10,6 +10,9 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
+import AddTicket from "./components/AddTickets";
+import Ticket from "./components/Ticket";
+import TicketsList from "./components/ListTickets";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -29,9 +32,6 @@ const App = () => {
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          bezKoder
-        </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/home"} className="nav-link">
@@ -51,8 +51,13 @@ const App = () => {
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
+              <Link to={"/tickets"} className="nav-link">
+                Tickets
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/add"} className="nav-link">
+                Add
               </Link>
             </li>
             <li className="nav-item">
@@ -85,6 +90,10 @@ const App = () => {
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" component={Profile} />
           <Route path="/user" component={BoardUser} />
+          <Route exact path="/tickets" component={TicketsList} />
+          <Route exact path="/add" component={AddTicket} />
+          <Route path="/tickets/:id" component={Ticket} />
+
         </Switch>
       </div>
     </div>
