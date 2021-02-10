@@ -15,7 +15,6 @@ const Ticket = (props) => {
     TicketDataService.get(id)
       .then((response) => {
         setCurrentTicket(response.data);
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -34,7 +33,6 @@ const Ticket = (props) => {
   const updateTicket = () => {
     TicketDataService.update(currentTicket.id, currentTicket)
       .then((response) => {
-        console.log(response.data);
         setMessage("The ticket was updated successfully!");
       })
       .catch((e) => {

@@ -1,16 +1,36 @@
 import React, { useState, useEffect } from "react";
 import TicketDataService from "../services/ticket.service";
-import { Link } from "react-router-dom";
+import TableTickets from "./TableTickets";
+import $ from "jquery";
+import DataTable from "datatables.net";
+
+$.DataTable = DataTable;
 
 const ListTickets = () => {
   const [tickets, setTickets] = useState([]);
-  const [currentTicket, setCurrentTickets] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [numbers, setNumbers] = useState([]);
+
+  useEffect(() => {
+    $(document).ready(function ($) {
+      $("#tableTickets").DataTable();
+    });
+  });
 
   useEffect(() => {
     retrieveTickets();
+    retrieveTicketsNumber();
   }, []);
-  
+
+  const retrieveTicketsNumber = () => {
+    TicketDataService.getNumber()
+      .then((response) => {
+        setNumbers(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   const retrieveTickets = () => {
     TicketDataService.getAll()
       .then((response) => {
@@ -21,73 +41,43 @@ const ListTickets = () => {
       });
   };
 
-  const refreshList = () => {
-    retrieveTickets();
-    setCurrentTickets(null);
-    setCurrentIndex(-1);
-  };
-
-  const setActiveTicket = (ticket, index) => {
-    setCurrentTickets(ticket);
-    setCurrentIndex(index);
-  };
-
   return (
-    <div className="list row">
-      <div className="col-md-6">
-        <h4>tickets List</h4>
-
-        <ul className="list-group">
-          {tickets.data &&
-            tickets.data.map((ticket, index) => (
-              <li
-                className={
-                  "list-group-item " + (index === currentIndex ? "active" : "")
-                }
-                onClick={() => setActiveTicket(ticket, index)}
-                key={index}
-              >
-                {ticket.name}
-              </li>
-            ))}
-        </ul>
-      </div>
-      <div className="col-md-6">
-        {currentTicket ? (
-          <div>
-            <h4>Tickets</h4>
-            <div>
-              <label>
-                <strong>Title:</strong>
-              </label>{" "}
-              {currentTicket.name}
-            </div>
-            <div>
-              <label>
-                <strong>Description:</strong>
-              </label>{" "}
-              {currentTicket.priority}
-            </div>
-            <div>
-              <label>
-                <strong>Status:</strong>
-              </label>{" "}
-              {currentTicket.status}
-            </div>
-
-            <Link
-              to={"/tickets/" + currentTicket.id}
-              className="badge badge-warning"
-            >
-              Edit
-            </Link>
+    <div className="container">
+      <h4>tickets List</h4>
+      <div>
+        <div className="card" style={{ width: " 18rem" }}>
+          <div className="card-header">Priority List</div>
+          <div className="card-body">
+            {numbers.data &&
+              numbers.data.map((number, index) => (
+                <p className="card-text">
+                  {number.priority} - {number.total_tickets}{" "}
+                </p>
+              ))}
           </div>
-        ) : (
-          <div>
-            <br />
-            <p>Please click on a Ticket...</p>
-          </div>
-        )}
+        </div>
+
+        <table
+          id="tableTickets"
+          className="table table-striped table-border"
+          style={{ width: "100%" }}
+        >
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Priority</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <>
+              {tickets.data &&
+                tickets.data.map((ticket, index) => (
+                  <TableTickets ticket={ticket} key={index} />
+                ))}
+            </>
+          </tbody>
+        </table>
       </div>
     </div>
   );

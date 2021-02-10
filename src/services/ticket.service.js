@@ -7,6 +7,10 @@ const getAll = () => {
   return axios.get(API_URL + '/tickets');
 };
 
+const getNumber = () => {
+  return axios.get(API_URL + `/tickets/number`);
+};
+
 const get = (id) => {
   return axios.get(`/tickets/${id}`);
 };
@@ -21,6 +25,7 @@ const update = (id, data) => {
 
 export default {
   getAll,
+  getNumber,
   get,
   create,
   update,
